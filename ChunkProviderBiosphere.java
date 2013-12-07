@@ -97,7 +97,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 	private WorldGenLakes lavaLakeGenerator;
 
 	// Biosphere
-	// ‹…‚Ì’†SÀ•W
+	// çƒã®ä¸­å¿ƒåº§æ¨™
 	public int midX;
 	public int midY;
 	public int midZ;
@@ -105,14 +105,14 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 	public double sphereRadius = 40.0D;
 	public final Random rndSphere;
 
-	// ¶¬‚·‚é—§‘Ì‚ÌŒ`ó
+	// ç”Ÿæˆã™ã‚‹ç«‹ä½“ã®å½¢çŠ¶
 	enum SolidType {
 		SPHERE, CUBE, COLUMN, PILLAR, PENTA_PILLAR, HEXA_PILLAR
 	};
 
 	public SolidType solid_type = SolidType.SPHERE;
 
-	// Šeí\‘¢•¨‚Ì¶¬ƒtƒ‰ƒO
+	// å„ç¨®æ§‹é€ ç‰©ã®ç”Ÿæˆãƒ•ãƒ©ã‚°
 	boolean generateMineshaft;
 	boolean generateVillage;
 	boolean generateStronghold;
@@ -145,12 +145,12 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		this.noiseGen6 = noiseGens[5];
 		this.mobSpawnerNoise = noiseGens[6];
 
-		// ƒX[ƒp[ƒtƒ‰ƒbƒg‚ÌƒJƒXƒ^ƒ}ƒCƒY‚ğ—˜—p
+		// ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒ•ãƒ©ãƒƒãƒˆã®ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºã‚’åˆ©ç”¨
 		this.flatWorldGenInfo = FlatGeneratorInfo.createFlatGeneratorFromString(par5Str);
 		if (par5Str.isEmpty()) {
-			// ƒJƒXƒ^ƒ}ƒCƒY‚È‚µ‚È‚çƒŒƒCƒ„[‚È‚µ
+			// ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºãªã—ãªã‚‰ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã—
 			this.flatWorldGenInfo.getFlatLayers().clear();
-			// ƒJƒXƒ^ƒ}ƒCƒY‚È‚µ‚È‚ç‘S‚Ä¶¬‚·‚é
+			// ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºãªã—ãªã‚‰å…¨ã¦ç”Ÿæˆã™ã‚‹
 			generateMineshaft = true;
 			generateVillage = true;
 			generateStronghold = true;
@@ -188,7 +188,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 
 	@Override
 	public Chunk provideChunk(int i, int j) {
-		// ‹…‚Ì’†SÀ•W‚ğŒvZ‚µA‹…‚²‚Æ‚É“Á’è‚Ì—”’l‚ğg—p‚·‚é
+		// çƒã®ä¸­å¿ƒåº§æ¨™ã‚’è¨ˆç®—ã—ã€çƒã”ã¨ã«ç‰¹å®šã®ä¹±æ•°å€¤ã‚’ä½¿ç”¨ã™ã‚‹
 		this.midX = ((i - (int) Math.floor(Math.IEEEremainder(i, Config.GRID_SIZE)) << 4) + 8);
 		this.midZ = ((j - (int) Math.floor(Math.IEEEremainder(j, Config.GRID_SIZE)) << 4) + 8);
 		this.rndSphere.setSeed(this.worldObj.getSeed());
@@ -198,14 +198,14 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		this.rndSphere.setSeed(l2);
 		this.midY = (int) Math.round(Config.CENTER_HEIGHT_MIN + this.rndSphere.nextDouble() * (Config.CENTER_HEIGHT_MAX - Config.CENTER_HEIGHT_MIN));
 
-		// ¶¬‚·‚é—§‘Ì‚Ìí—Ş‚ğ•ÏXB‹…‚Ì‚İ‚Ìİ’è‚ª‚ ‚Á‚½ê‡‚Í–³Œø
+		// ç”Ÿæˆã™ã‚‹ç«‹ä½“ã®ç¨®é¡ã‚’å¤‰æ›´ã€‚çƒã®ã¿ã®è¨­å®šãŒã‚ã£ãŸå ´åˆã¯ç„¡åŠ¹
 		this.solid_type = SolidType.values()[this.rndSphere.nextInt(SolidType.values().length)];
 		if (Config.SPHERE_ONLY) {
 			this.solid_type = SolidType.SPHERE;
 		}
 		this.sphereRadius = (Math.round(Config.RADIUS_MIN + this.rndSphere.nextDouble() * (Config.RADIUS_MAX - Config.RADIUS_MIN)) * 1.0F);
 
-		// ’Êí‚Ì’nŒ`¶¬
+		// é€šå¸¸ã®åœ°å½¢ç”Ÿæˆ
 		this.random.setSeed(i * 341873128712L + j * 132897987541L);
 		byte[] abyte = new byte[32768];
 		this.generateTerrain(i, j, abyte);
@@ -232,8 +232,8 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		Chunk chunk = new Chunk(this.worldObj, abyte, i, j);
 		chunk.generateSkylightMap();
 
-		// ’nŒ`¶¬Œã‚É—§‘ÌŠO‚ÌƒuƒƒbƒN‚ğí‚Á‚½‚èƒJƒXƒ^ƒ}ƒCƒY‚ÌƒŒƒCƒ„[‚ğ¶¬‚µ‚½‚è‚·‚é
-		// —§‘Ì‚ÌŒ`ó‚É‚æ‚è¶¬ƒƒ\ƒbƒh‚ğØ‚è‘Ö‚¦‚éB‚ªA¡‚Ì‚Æ‚±‚ë³•û’Œ‚Æ‰~’Œ‚Ì‚İ
+		// åœ°å½¢ç”Ÿæˆå¾Œã«ç«‹ä½“å¤–ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’å‰Šã£ãŸã‚Šã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºã®ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç”Ÿæˆã—ãŸã‚Šã™ã‚‹
+		// ç«‹ä½“ã®å½¢çŠ¶ã«ã‚ˆã‚Šç”Ÿæˆãƒ¡ã‚½ãƒƒãƒ‰ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹ã€‚ãŒã€ä»Šã®ã¨ã“ã‚æ­£æ–¹æŸ±ã¨å††æŸ±ã®ã¿
 		switch (solid_type) {
 		case CUBE:
 			generateCube(i, j, chunk);
@@ -249,7 +249,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		return chunk;
 	}
 
-	// ‰~’Œ‚Æ‹´‚ğ¶¬‚·‚é
+	// å††æŸ±ã¨æ©‹ã‚’ç”Ÿæˆã™ã‚‹
 	private void generateColumn(int i, int j, Chunk chunk) {
 		for (int k = 0; k < this.cachedBlockIDs.length; ++k) {
 			int l = k >> 4;
@@ -304,7 +304,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		}
 	}
 
-	// ³•û’Œ‚Æ‹´‚ğ¶¬‚·‚é
+	// æ­£æ–¹æŸ±ã¨æ©‹ã‚’ç”Ÿæˆã™ã‚‹
 	private void generateCube(int i, int j, Chunk chunk) {
 		for (int k = 0; k < this.cachedBlockIDs.length; ++k) {
 			int l = k >> 4;
@@ -320,7 +320,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 
 					int x = (i << 4) + j1;
 					int z = (j << 4) + i1;
-					// xz•½–Êã‚Å³•ûŒ`‚Æ‚ÌˆÊ’uŠÖŒW‚ğŒvZ
+					// xzå¹³é¢ä¸Šã§æ­£æ–¹å½¢ã¨ã®ä½ç½®é–¢ä¿‚ã‚’è¨ˆç®—
 					double halfwidth = this.sphereRadius;
 					boolean inside = (Math.abs(x - midX) < halfwidth && (Math.abs(z - midZ) < halfwidth));
 					boolean side = ((Math.abs(x - midX) == halfwidth && Math.abs(z - midZ) <= halfwidth) || (Math.abs(x - midX) <= halfwidth && Math.abs(z - midZ) == halfwidth));
@@ -365,7 +365,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		}
 	}
 
-	// ‹…‚Æ‹´‚ğ¶¬‚·‚é
+	// çƒã¨æ©‹ã‚’ç”Ÿæˆã™ã‚‹
 	private void generateSphere(int i, int j, Chunk chunk) {
 		for (int k = 0; k < this.cachedBlockIDs.length; ++k) {
 			int l = k >> 4;
@@ -418,7 +418,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		return this.provideChunk(i, j);
 	}
 
-	// Overworld‚Æ“¯—l‚Ì¶¬‚ğ‚·‚é‚ªAƒX[ƒp[ƒtƒ‰ƒbƒg‚ÌƒJƒXƒ^ƒ}ƒCƒYİ’è‚Å\‘¢•¨“™‚Ì¶¬‚ğ§Œä‚·‚é
+	// Overworldã¨åŒæ§˜ã®ç”Ÿæˆã‚’ã™ã‚‹ãŒã€ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒ•ãƒ©ãƒƒãƒˆã®ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºè¨­å®šã§æ§‹é€ ç‰©ç­‰ã®ç”Ÿæˆã‚’åˆ¶å¾¡ã™ã‚‹
 	@Override
 	public void populate(IChunkProvider ichunkprovider, int i, int j) {
 
@@ -578,7 +578,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 	private void generateTerrain(int par1, int par2, byte[] par3ArrayOfByte) {
 		byte b0 = 4;
 		byte b1 = 16;
-		// …–Ê‚Í‹…’†S‚Ì‚‚³‚Æ‚·‚é
+		// æ°´é¢ã¯çƒä¸­å¿ƒã®é«˜ã•ã¨ã™ã‚‹
 		byte b2 = (byte) midY;
 		int k = b0 + 1;
 		byte b3 = 17;
@@ -832,12 +832,12 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		return par1ArrayOfDouble;
 	}
 
-	// ‹…‚Ì’†S‚©‚ç‚Ì‹——£
+	// çƒã®ä¸­å¿ƒã‹ã‚‰ã®è·é›¢
 	private double getSphereDistance(int i, int j, int k) {
 		return Math.round(getDistance(i, j, k, this.midX, this.midY, this.midZ));
 	}
 
-	// “ñ“_ŠÔ‚Ì‹——£
+	// äºŒç‚¹é–“ã®è·é›¢
 	private static final double getDistance(double d, double d1, double d2, double d3, double d4, double d5) {
 		return Math.sqrt(Math.pow(d4 - d1, 2.0D) + Math.pow(d3 - d, 2.0D) + Math.pow(d5 - d2, 2.0D));
 	}

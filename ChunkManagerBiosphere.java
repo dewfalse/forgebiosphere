@@ -94,19 +94,19 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 		return super.getModdedBiomeGenerators(worldType, seed, original);
 	}
 
-	// �O���b�h�����ψ�ȃo�C�I�[���ɂ���Ƃ��Ɏg�����Ǝv���Ă郁�\�b�h
+	// グリッド内を均一なバイオームにするときに使おうと思ってるメソッド
 	public int[] getGridCenter(int par1, int par2) {
 		int[] position = new int[2];
 		if (Config.NORMAL_BIOME) {
 			position[0] = par1;
 			position[1] = par2;
 		} else {
-			// chunk�P�ʂɕύX
+			// chunk単位に変更
 			int i = par1 >> 4;
 			int j = par2 >> 4;
 			i = ((i + Config.GRID_SIZE / 2) / Config.GRID_SIZE) * Config.GRID_SIZE;
 			j = ((j + Config.GRID_SIZE / 2) / Config.GRID_SIZE) * Config.GRID_SIZE;
-			// �ʏ�̍��W�ɖ߂�
+			// 通常の座標に戻す
 			position[0] = i << 4;
 			position[1] = j << 4;
 		}

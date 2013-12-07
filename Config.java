@@ -10,30 +10,30 @@ public class Config {
 
 	public static int WORLD_TYPE_ID = 7;
 
-	// ‹…ˆêŒÂ‚ªè‚ß‚échunkˆê•Ó‚Ì‘å‚«‚³
+	// çƒä¸€å€‹ãŒå ã‚ã‚‹chunkä¸€è¾ºã®å¤§ãã•
 	public static int GRID_SIZE = 9;
 
-	// ‹…‚Ì”¼ŒaÅ¬EÅ‘å’l
+	// çƒã®åŠå¾„æœ€å°ãƒ»æœ€å¤§å€¤
 	public static int RADIUS_MIN = 40;
 	public static int RADIUS_MAX = 40;
 
-	// ‹…‚Ì’†S‚Ì‚‚³iYÀ•WjÅ¬EÅ‘å’l
+	// çƒã®ä¸­å¿ƒã®é«˜ã•ï¼ˆYåº§æ¨™ï¼‰æœ€å°ãƒ»æœ€å¤§å€¤
 	public static int CENTER_HEIGHT_MIN = 40;
 	public static int CENTER_HEIGHT_MAX = 63;
 
-	// ‹´‚ğì‚é
+	// æ©‹ã‚’ä½œã‚‹
 	public static boolean CREATE_BRIDGE = true;
 
-	// ‹´‚Ì‚‚³iYÀ•Wj
+	// æ©‹ã®é«˜ã•ï¼ˆYåº§æ¨™ï¼‰
 	public static int BRIDGE_HEIGHT = 63;
 
-	// ‹…‚ğì‚éƒuƒƒbƒNIDiƒfƒtƒHƒ‹ƒg‚Í20ƒKƒ‰ƒXj
+	// çƒã‚’ä½œã‚‹ãƒ–ãƒ­ãƒƒã‚¯IDï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯20ï¼ã‚¬ãƒ©ã‚¹ï¼‰
 	public static int BLOCK_ID = 20;
 
-	// ‹…ˆÈŠO‚Ì—§‘Ì‚ğì‚é‚©‚Ç‚¤‚©
+	// çƒä»¥å¤–ã®ç«‹ä½“ã‚’ä½œã‚‹ã‹ã©ã†ã‹
 	public static boolean SPHERE_ONLY = true;
 
-	// ƒOƒŠƒbƒh“à‚ÌƒoƒCƒI[ƒ€‚ğ‘S‚Ä“¯‚¶‚É‚·‚é‚©‚Ç‚¤‚©
+	// ã‚°ãƒªãƒƒãƒ‰å†…ã®ãƒã‚¤ã‚ªãƒ¼ãƒ ã‚’å…¨ã¦åŒã˜ã«ã™ã‚‹ã‹ã©ã†ã‹
 	public static boolean NORMAL_BIOME = true;
 
 	public static void preInit(File file) {
@@ -52,7 +52,7 @@ public class Config {
 			CREATE_BRIDGE = cfg.get(Configuration.CATEGORY_GENERAL, "CREATE_BRIDGE", true).getBoolean(true);
 			SPHERE_ONLY = cfg.get(Configuration.CATEGORY_GENERAL, "SPHERE_ONLY", true).getBoolean(true);
 
-			// À‘•‚Å‚«‚Ä‚È‚¢‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg
+			// å®Ÿè£…ã§ãã¦ãªã„ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
 			// NORMAL_BIOME = cfg.get(Configuration.CATEGORY_GENERAL, "NORMAL_BIOME", true).getBoolean(true);
 			cfg.save();
 		} catch (Exception e) {

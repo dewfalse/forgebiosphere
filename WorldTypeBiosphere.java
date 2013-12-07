@@ -56,13 +56,13 @@ public class WorldTypeBiosphere extends WorldType {
 		return 1.0D;
 	}
 
-	// ƒJƒXƒ^ƒ}ƒCƒYƒ{ƒ^ƒ“‚ð•\Ž¦‚·‚é
+	// ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚ºãƒœã‚¿ãƒ³ã‚’è¡¨ç¤ºã™ã‚‹
 	@Override
 	public boolean isCustomizable() {
 		return true;
 	}
 
-	// ƒJƒXƒ^ƒ}ƒCƒYƒ{ƒ^ƒ“‚©‚çƒX[ƒp[ƒtƒ‰ƒbƒg‚ÌƒJƒXƒ^ƒ}ƒCƒY‰æ–Ê‚ð•\Ž¦‚·‚é
+	// ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚ºãƒœã‚¿ãƒ³ã‹ã‚‰ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒ•ãƒ©ãƒƒãƒˆã®ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚ºç”»é¢ã‚’è¡¨ç¤ºã™ã‚‹
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onCustomizeButton(Minecraft instance, GuiCreateWorld guiCreateWorld) {
