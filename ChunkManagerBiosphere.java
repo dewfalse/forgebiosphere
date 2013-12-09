@@ -14,8 +14,11 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 
 	private Random rand;
 	private long seed;
-	private float scale;
-	private int scaledGrid;
+
+	private World worldObj;
+	private int midX;
+	private int midZ;
+	private final Random rndSphere = new Random();
 
 	public ChunkManagerBiosphere() {
 	}
@@ -25,13 +28,12 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 		GenLayer[] agenlayer = GenLayer.initializeAllBiomeGenerators(par1, par3WorldType);
 		agenlayer = getModdedBiomeGenerators(par3WorldType, par1, agenlayer);
 		this.seed = par1;
-		this.scale = 1.0F;
-		this.scaledGrid = (int) (Config.GRID_SIZE * this.scale);
 		this.rand = new Random(this.seed);
 	}
 
 	public ChunkManagerBiosphere(World par1World) {
 		this(par1World.getSeed(), ForgeBiosphere.worldTypeBiosphere);
+		this.worldObj = par1World;
 	}
 
 	@Override
@@ -41,7 +43,16 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 
 	@Override
 	public BiomeGenBase getBiomeGenAt(int par1, int par2) {
-		return super.getBiomeGenAt(par1, par2);
+		if (Config.NORMAL_BIOME) {
+			return super.getBiomeGenAt(par1, par2);
+		} else {
+			// 1680,1702
+			int x = par1 >> 4;
+			int z = par2 >> 4;
+			setRand(x, z);
+			BiomeGenBase biome = BiosphereBiomeManager.getRandomBiome(this.rndSphere);
+			return biome;
+		}
 	}
 
 	@Override
@@ -61,22 +72,72 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 
 	@Override
 	public BiomeGenBase[] getBiomesForGeneration(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5) {
-		return super.getBiomesForGeneration(par1ArrayOfBiomeGenBase, par2, par3, par4, par5);
+		if (Config.NORMAL_BIOME) {
+			return super.getBiomesForGeneration(par1ArrayOfBiomeGenBase, par2, par3, par4, par5);
+		} else {
+			// 418,422
+			int x = (par2 + 2) >> 2;
+			int z = (par3 + 2) >> 2;
+			setRand(x, z);
+			BiomeGenBase biome = BiosphereBiomeManager.getRandomBiome(this.rndSphere);
+			BiomeGenBase[] ret = new BiomeGenBase[256];
+			for (int i = 0; i < ret.length; ++i) {
+				ret[i] = biome;
+			}
+			return ret;
+		}
 	}
 
 	@Override
 	public BiomeGenBase[] loadBlockGeneratorData(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5) {
-		return super.loadBlockGeneratorData(par1ArrayOfBiomeGenBase, par2, par3, par4, par5);
+		if (Config.NORMAL_BIOME) {
+			return super.loadBlockGeneratorData(par1ArrayOfBiomeGenBase, par2, par3, par4, par5);
+		} else {
+			// 1680,1696
+			int x = par2 >> 4;
+			int z = par3 >> 4;
+			setRand(x, z);
+			BiomeGenBase biome = BiosphereBiomeManager.getRandomBiome(this.rndSphere);
+			BiomeGenBase[] ret = new BiomeGenBase[256];
+			for (int i = 0; i < ret.length; ++i) {
+				ret[i] = biome;
+			}
+			return ret;
+		}
 	}
 
 	@Override
 	public BiomeGenBase[] getBiomeGenAt(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5, boolean par6) {
-		return super.getBiomeGenAt(par1ArrayOfBiomeGenBase, par2, par3, par4, par5, par6);
+		if (Config.NORMAL_BIOME) {
+			return super.getBiomeGenAt(par1ArrayOfBiomeGenBase, par2, par3, par4, par5, par6);
+		} else {
+			int x = par2;
+			int z = par3;
+			setRand(x, z);
+			BiomeGenBase biome = BiosphereBiomeManager.getRandomBiome(this.rndSphere);
+			BiomeGenBase[] ret = new BiomeGenBase[256];
+			for (int i = 0; i < ret.length; ++i) {
+				ret[i] = biome;
+			}
+			return ret;
+		}
 	}
 
 	@Override
 	public boolean areBiomesViable(int par1, int par2, int par3, List par4List) {
-		return super.areBiomesViable(par1, par2, par3, par4List);
+		if (Config.NORMAL_BIOME) {
+			return super.areBiomesViable(par1, par2, par3, par4List);
+		} else {
+			// 1704,1544
+			int x = par1 >> 4;
+			int z = par2 >> 4;
+			setRand(x, z);
+			BiomeGenBase biome = BiosphereBiomeManager.getRandomBiome(this.rndSphere);
+			if (!par4List.contains(biome)) {
+				return false;
+			}
+			return true;
+		}
 	}
 
 	@Override
@@ -94,22 +155,18 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 		return super.getModdedBiomeGenerators(worldType, seed, original);
 	}
 
-	// グリッド内を均一なバイオームにするときに使おうと思ってるメソッド
-	public int[] getGridCenter(int par1, int par2) {
-		int[] position = new int[2];
-		if (Config.NORMAL_BIOME) {
-			position[0] = par1;
-			position[1] = par2;
-		} else {
-			// chunk単位に変更
-			int i = par1 >> 4;
-			int j = par2 >> 4;
-			i = ((i + Config.GRID_SIZE / 2) / Config.GRID_SIZE) * Config.GRID_SIZE;
-			j = ((j + Config.GRID_SIZE / 2) / Config.GRID_SIZE) * Config.GRID_SIZE;
-			// 通常の座標に戻す
-			position[0] = i << 4;
-			position[1] = j << 4;
-		}
-		return position;
+	/*
+	 * private BiomeGenBase getRandomBiome() { BiomeGenBase biome = null; while (biome == null) { biome = BiomeGenBase.biomeList[this.rndSphere.nextInt(BiomeGenBase.biomeList.length)]; } return biome;
+	 * }
+	 */
+	private void setRand(int i, int j) {
+		this.midX = ((i - (int) Math.floor(Math.IEEEremainder(i, Config.GRID_SIZE)) << 4) + 8);
+		this.midZ = ((j - (int) Math.floor(Math.IEEEremainder(j, Config.GRID_SIZE)) << 4) + 8);
+		this.rndSphere.setSeed(this.worldObj.getSeed());
+		long l0 = this.rndSphere.nextLong() / 2L * 2L + 1L;
+		long l1 = this.rndSphere.nextLong() / 2L * 2L + 1L;
+		long l2 = (this.midX * l0 + this.midZ * l1) * 2512576L ^ this.worldObj.getSeed();
+		this.rndSphere.setSeed(l2);
 	}
+
 }

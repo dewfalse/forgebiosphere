@@ -155,6 +155,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 			generateVillage = true;
 			generateStronghold = true;
 			generateScatteredFeature = true;
+			generateDecoration = true;
 			generateWaterLake = true;
 			generateLavaLake = true;
 			generateDungeon = true;
@@ -189,13 +190,8 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 	@Override
 	public Chunk provideChunk(int i, int j) {
 		// 球の中心座標を計算し、球ごとに特定の乱数値を使用する
-		this.midX = ((i - (int) Math.floor(Math.IEEEremainder(i, Config.GRID_SIZE)) << 4) + 8);
-		this.midZ = ((j - (int) Math.floor(Math.IEEEremainder(j, Config.GRID_SIZE)) << 4) + 8);
-		this.rndSphere.setSeed(this.worldObj.getSeed());
-		long l0 = this.rndSphere.nextLong() / 2L * 2L + 1L;
-		long l1 = this.rndSphere.nextLong() / 2L * 2L + 1L;
-		long l2 = (this.midX * l0 + this.midZ * l1) * 2512576L ^ this.worldObj.getSeed();
-		this.rndSphere.setSeed(l2);
+		setRand(i, j);
+		BiomeGenBase biome = BiosphereBiomeManager.getRandomBiome(this.rndSphere);
 		this.midY = (int) Math.round(Config.CENTER_HEIGHT_MIN + this.rndSphere.nextDouble() * (Config.CENTER_HEIGHT_MAX - Config.CENTER_HEIGHT_MIN));
 
 		// 生成する立体の種類を変更。球のみの設定があった場合は無効
@@ -210,6 +206,9 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		byte[] abyte = new byte[32768];
 		this.generateTerrain(i, j, abyte);
 		this.biomesForGeneration = this.worldObj.getWorldChunkManager().loadBlockGeneratorData(this.biomesForGeneration, i * 16, j * 16, 16, 16);
+		for (int bi = 0; bi < biomesForGeneration.length; ++bi) {
+			biomesForGeneration[bi] = biome;
+		}
 		this.replaceBlocksForBiome(i, j, abyte, this.biomesForGeneration);
 		this.caveGenerator.generate(this, this.worldObj, i, j, abyte);
 		this.ravineGenerator.generate(this, this.worldObj, i, j, abyte);
@@ -579,7 +578,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		byte b0 = 4;
 		byte b1 = 16;
 		// 水面は球中心の高さとする
-		byte b2 = (byte) midY;
+		byte b2 = (byte) (midY);
 		int k = b0 + 1;
 		byte b3 = 17;
 		int l = b0 + 1;
@@ -644,7 +643,7 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		if (event.getResult() == Result.DENY)
 			return;
 
-		byte b0 = 63;
+		byte b0 = (byte) (midY);
 		double d0 = 0.03125D;
 		this.stoneNoise = this.noiseGen4.generateNoiseOctaves(this.stoneNoise, par1 * 16, par2 * 16, 0, 16, 16, 1, d0 * 2.0D, d0 * 2.0D, d0 * 2.0D);
 
@@ -840,6 +839,16 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 	// 二点間の距離
 	private static final double getDistance(double d, double d1, double d2, double d3, double d4, double d5) {
 		return Math.sqrt(Math.pow(d4 - d1, 2.0D) + Math.pow(d3 - d, 2.0D) + Math.pow(d5 - d2, 2.0D));
+	}
+
+	private void setRand(int i, int j) {
+		this.midX = ((i - (int) Math.floor(Math.IEEEremainder(i, Config.GRID_SIZE)) << 4) + 8);
+		this.midZ = ((j - (int) Math.floor(Math.IEEEremainder(j, Config.GRID_SIZE)) << 4) + 8);
+		this.rndSphere.setSeed(this.worldObj.getSeed());
+		long l0 = this.rndSphere.nextLong() / 2L * 2L + 1L;
+		long l1 = this.rndSphere.nextLong() / 2L * 2L + 1L;
+		long l2 = (this.midX * l0 + this.midZ * l1) * 2512576L ^ this.worldObj.getSeed();
+		this.rndSphere.setSeed(l2);
 	}
 
 }
