@@ -244,6 +244,11 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 			generateSphere(i, j, chunk);
 		}
 
+		byte[] abyte1 = chunk.getBiomeArray();
+
+		for (int k = 0; k < abyte1.length; ++k) {
+			abyte1[k] = (byte) this.biomesForGeneration[k].biomeID;
+		}
 		chunk.generateSkylightMap();
 		return chunk;
 	}
