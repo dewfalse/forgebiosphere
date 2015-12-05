@@ -1,10 +1,10 @@
 package forgebiosphere;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class BiosphereBiomeManager {
 	private static ArrayList<WeightedRandomBiome> biomes = new ArrayList<WeightedRandomBiome>();
@@ -39,7 +39,7 @@ public class BiosphereBiomeManager {
 		if (biome == null) {
 			return BiomeGenBase.plains;
 		}
-		return BiomeGenBase.biomeList[biome.biomeID];
+		return BiomeGenBase.getBiomeGenArray()[biome.biomeID];
 	}
 
 	static {

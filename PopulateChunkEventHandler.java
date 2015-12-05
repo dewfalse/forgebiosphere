@@ -1,11 +1,11 @@
 package forgebiosphere;
 
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 
 public class PopulateChunkEventHandler {
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void populateChunkEvent(PopulateChunkEvent.Post event) {
 	}
 }

@@ -1,32 +1,28 @@
 package forgebiosphere;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiCreateFlatWorld;
 import net.minecraft.client.gui.GuiCreateWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.chunk.IChunkProvider;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class WorldTypeBiosphere extends WorldType {
 
-	public WorldTypeBiosphere(int par1, String par2Str) {
-		super(par1, par2Str);
-	}
+    /**
+     * Creates a new world type, the ID is hidden and should not be referenced by modders.
+     * It will automatically expand the underlying workdType array if there are no IDs left.
+     *
+     * @param name
+     */
+    public WorldTypeBiosphere(String name) {
+        super(name);
+    }
 
-	public WorldTypeBiosphere(int par1, String par2Str, int par3) {
-		super(par1, par2Str, par3);
-	}
-
-	@Override
-	public BiomeGenBase[] getBiomesForWorldType() {
-		return WorldType.DEFAULT.getBiomesForWorldType();
-	}
-
-	@Override
+    @Override
 	public WorldChunkManager getChunkManager(World world) {
 		return new ChunkManagerBiosphere(world);
 	}
@@ -66,7 +62,7 @@ public class WorldTypeBiosphere extends WorldType {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onCustomizeButton(Minecraft instance, GuiCreateWorld guiCreateWorld) {
-		instance.displayGuiScreen(new GuiCreateFlatWorld(guiCreateWorld, guiCreateWorld.generatorOptionsToUse));
+		instance.displayGuiScreen(new GuiCreateFlatWorld(guiCreateWorld, guiCreateWorld.field_146334_a));
 	}
 
 }

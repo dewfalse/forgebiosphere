@@ -1,13 +1,13 @@
 package forgebiosphere;
 
-import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = ForgeBiosphere.modid, name = ForgeBiosphere.modid, version = "1.0")
 public class ForgeBiosphere {
@@ -23,7 +23,7 @@ public class ForgeBiosphere {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		LanguageRegistry.instance().addStringLocalization("generator.biosphere", "Biospheres");
-		worldTypeBiosphere = new WorldTypeBiosphere(Config.WORLD_TYPE_ID, "biosphere");
+		worldTypeBiosphere = new WorldTypeBiosphere("biosphere");
 		MinecraftForge.EVENT_BUS.register(new PopulateChunkEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ChunkProviderEventHandler());
 
@@ -40,7 +40,7 @@ public class ForgeBiosphere {
 				int rarity = Integer.parseInt(pair[1]);
 				BiosphereBiomeManager.addWeightedRandomBiome(biomeID, rarity);
 			} catch (NumberFormatException e) {
-				for (BiomeGenBase biome : BiomeGenBase.biomeList) {
+				for (BiomeGenBase biome : BiomeGenBase.getBiomeGenArray()) {
 					if (biome == null) {
 						continue;
 					}

@@ -1,10 +1,12 @@
 package forgebiosphere;
 
-import java.io.File;
-import java.util.logging.Level;
-
-import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraftforge.common.config.Configuration;
+import org.apache.logging.log4j.Level;
+
+import java.io.File;
 
 public class Config {
 
@@ -28,7 +30,7 @@ public class Config {
 	public static int BRIDGE_HEIGHT = 63;
 
 	// 球を作るブロックID（デフォルトは20＝ガラス）
-	public static int BLOCK_ID = 20;
+	public static Block BLOCK = Blocks.glass;
 
 	// 球以外の立体を作るかどうか
 	public static boolean SPHERE_ONLY = true;
@@ -42,12 +44,12 @@ public class Config {
 	// 生成するバイオームリスト
 	public static String BIOMES_LIST = BIOMES_LIST_DEFAULT;
 
-	public static void preInit(File file) {
+    public static void preInit(File file) {
 		Configuration cfg = new Configuration(file);
 		try {
 			cfg.load();
 
-			BLOCK_ID = cfg.get(Configuration.CATEGORY_BLOCK, "BLOCK_ID", 20).getInt();
+//			BLOCK_ID = cfg.get(Configuration.CATEGORY_BLOCK, "BLOCK_ID", 20).getInt();
 			WORLD_TYPE_ID = cfg.get(Configuration.CATEGORY_GENERAL, "WORLD_TYPE_ID", 7).getInt();
 			GRID_SIZE = cfg.get(Configuration.CATEGORY_GENERAL, "GRID_SIZE", 8).getInt();
 			RADIUS_MIN = cfg.get(Configuration.CATEGORY_GENERAL, "RADIUS_MIN", 40).getInt();
@@ -61,7 +63,7 @@ public class Config {
 			BIOMES_LIST = cfg.get(Configuration.CATEGORY_GENERAL, "BIOMES_LIST", BIOMES_LIST_DEFAULT).getString();
 			cfg.save();
 		} catch (Exception e) {
-			FMLLog.log(Level.SEVERE, e, ForgeBiosphere.modid + " load config exception");
+			FMLLog.log(Level.ERROR, e, ForgeBiosphere.modid + " load config exception");
 		} finally {
 			cfg.save();
 		}

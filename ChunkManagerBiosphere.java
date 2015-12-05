@@ -1,14 +1,14 @@
 package forgebiosphere;
 
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.gen.layer.GenLayer;
+
+import java.util.List;
+import java.util.Random;
 
 public class ChunkManagerBiosphere extends WorldChunkManager {
 
@@ -63,11 +63,6 @@ public class ChunkManagerBiosphere extends WorldChunkManager {
 	@Override
 	public float getTemperatureAtHeight(float par1, int par2) {
 		return super.getTemperatureAtHeight(par1, par2);
-	}
-
-	@Override
-	public float[] getTemperatures(float[] par1ArrayOfFloat, int par2, int par3, int par4, int par5) {
-		return super.getTemperatures(par1ArrayOfFloat, par2, par3, par4, par5);
 	}
 
 	@Override
