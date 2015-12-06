@@ -39,7 +39,7 @@ public class Config {
 	public static boolean NORMAL_BIOME = false;
 
 	// 生成するバイオームリストの初期値。バイオーム名:頻度 の形式でカンマ区切りで指定する
-	public static final String BIOMES_LIST_DEFAULT = "Plains:25,Forest:50,Taiga:40,Desert:25,Ice Plains:25,Jungle:25,Swampland:40,MushroomIsland:5,Ocean:15";
+	public static final String BIOMES_LIST_DEFAULT = "Plains:25,Forest:50,Taiga:40,Desert:25,Ice Plains:25,Jungle:25,Swampland:40,MushroomIsland:5,Ocean:15,River:10,Hell:1,Sky:1,FrozenOcean:10,FrozenRiver:10,Beach:10,Deep Ocean:10,Stone Beach:10,Cold Beach:10,Birch Forest:10,Roofed Forest:10,Cold Taiga:10,Mega Taiga:10,Savanna:10,Mesa:10,";
 
 	// 生成するバイオームリスト
 	public static String BIOMES_LIST = BIOMES_LIST_DEFAULT;

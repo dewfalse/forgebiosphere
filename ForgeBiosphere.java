@@ -9,7 +9,7 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = ForgeBiosphere.modid, name = ForgeBiosphere.modid, version = "1.0")
+@Mod(modid = ForgeBiosphere.modid, name = ForgeBiosphere.modid, version = "1.7.10.1")
 public class ForgeBiosphere {
 	public static final String modid = "forgebiosphere";
 

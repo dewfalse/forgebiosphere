@@ -68,11 +68,10 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 	private MapGenBase ravineGenerator = new MapGenRavine();
 	private BiomeGenBase[] biomesForGeneration;
 
-	double[] noise1;
-	double[] noise2;
-	double[] noise3;
-	double[] noise5;
-	double[] noise6;
+    double[] field_147427_d;
+    double[] field_147428_e;
+    double[] field_147425_f;
+    double[] field_147426_g;
 	float[] parabolicField;
 	int[][] field_73219_j = new int[32][32];
 
@@ -130,6 +129,16 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		this.noiseGen5 = new NoiseGeneratorOctaves(this.random, 10);
 		this.noiseGen6 = new NoiseGeneratorOctaves(this.random, 16);
 		this.mobSpawnerNoise = new NoiseGeneratorOctaves(this.random, 8);
+        this.parabolicField = new float[25];
+
+        for (int j = -2; j <= 2; ++j)
+        {
+            for (int k = -2; k <= 2; ++k)
+            {
+                float f = 10.0F / MathHelper.sqrt_float((float)(j * j + k * k) + 0.2F);
+                this.parabolicField[j + 2 + (k + 2) * 5] = f;
+            }
+        }
 
         NoiseGenerator[] noiseGens = { noiseGen1, noiseGen2, noiseGen3, noiseGen4, noiseGen5, noiseGen6, mobSpawnerNoise };
 		noiseGens = TerrainGen.getModdedNoiseGenerators(par1World, this.random, noiseGens);
@@ -166,14 +175,19 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 
 		Iterator iterator = this.flatWorldGenInfo.getFlatLayers().iterator();
 
-		while (iterator.hasNext()) {
-			FlatLayerInfo flatlayerinfo = (FlatLayerInfo) iterator.next();
+        for(int i = 0; i < this.cachedBlockIDs.length; i++) {
+            this.cachedBlockIDs[i] = Blocks.air;
+        }
+        if(!par5Str.isEmpty()) {
+            while (iterator.hasNext()) {
+                FlatLayerInfo flatlayerinfo = (FlatLayerInfo) iterator.next();
 
-			for (int j = flatlayerinfo.getMinY(); j < flatlayerinfo.getMinY() + flatlayerinfo.getLayerCount(); ++j) {
-				this.cachedBlockIDs[j] = flatlayerinfo.func_151536_b();
-				this.cachedBlockMetadata[j] = (byte) flatlayerinfo.getFillBlockMeta();
-			}
-		}
+                for (int j = flatlayerinfo.getMinY(); j < flatlayerinfo.getMinY() + flatlayerinfo.getLayerCount(); ++j) {
+                    this.cachedBlockIDs[j] = flatlayerinfo.func_151536_b();
+                    this.cachedBlockMetadata[j] = (byte) flatlayerinfo.getFillBlockMeta();
+                }
+            }
+        }
 	}
 
 	@Override
@@ -274,8 +288,10 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 							extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, 0);
 						}
 					} else if (outside || Math.abs(midY - k) > this.sphereRadius) {
-						extendedblockstorage.func_150818_a(j1, k & 15, i1, this.cachedBlockIDs[k]);
-						extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, this.cachedBlockMetadata[k]);
+                        if(this.cachedBlockIDs[k] != null) {
+                            extendedblockstorage.func_150818_a(j1, k & 15, i1, this.cachedBlockIDs[k]);
+                            extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, this.cachedBlockMetadata[k]);
+                        }
 					}
 
 					if (Config.CREATE_BRIDGE) {
@@ -335,8 +351,10 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 							extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, 0);
 						}
 					} else if (outside || Math.abs(k - midY) > halfwidth) {
-						extendedblockstorage.func_150818_a(j1, k & 15, i1, this.cachedBlockIDs[k]);
-						extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, this.cachedBlockMetadata[k]);
+                        if(this.cachedBlockIDs[k] != null) {
+                            extendedblockstorage.func_150818_a(j1, k & 15, i1, this.cachedBlockIDs[k]);
+                            extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, this.cachedBlockMetadata[k]);
+                        }
 					}
 
 					if (Config.CREATE_BRIDGE) {
@@ -385,8 +403,10 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 							extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, 0);
 						}
 					} else if (d > this.sphereRadius) {
-						extendedblockstorage.func_150818_a(j1, k & 15, i1, this.cachedBlockIDs[k]);
-						extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, this.cachedBlockMetadata[k]);
+                        if(this.cachedBlockIDs[k] != null) {
+                            extendedblockstorage.func_150818_a(j1, k & 15, i1, this.cachedBlockIDs[k]);
+                            extendedblockstorage.setExtBlockMetadata(j1, k & 15, i1, this.cachedBlockMetadata[k]);
+                        }
 					}
 
 					if (Config.CREATE_BRIDGE) {
@@ -574,262 +594,218 @@ public class ChunkProviderBiosphere implements IChunkProvider {
 		}
 	}
 
-	private void generateTerrain(int par1, int par2, Block[] par3ArrayOfBlock) {
-		byte b0 = 4;
-		byte b1 = 16;
-		// 水面は球中心の高さとする
-		byte b2 = (byte) (midY);
-		int k = b0 + 1;
-		byte b3 = 17;
-		int l = b0 + 1;
-		this.biomesForGeneration = this.worldObj.getWorldChunkManager().getBiomesForGeneration(this.biomesForGeneration, par1 * 4 - 2, par2 * 4 - 2, k + 5, l + 5);
-		this.noiseArray = this.initializeNoiseField(this.noiseArray, par1 * b0, 0, par2 * b0, k, b3, l);
+	private void generateTerrain(int p_147424_1_, int p_147424_2_, Block[] p_147424_3_)
+    {
+        byte b0 = 63;
+        this.biomesForGeneration = this.worldObj.getWorldChunkManager().getBiomesForGeneration(this.biomesForGeneration, p_147424_1_ * 4 - 2, p_147424_2_ * 4 - 2, 10, 10);
+        this.initializeNoiseField(p_147424_1_ * 4, 0, p_147424_2_ * 4);
 
-		for (int i1 = 0; i1 < b0; ++i1) {
-			for (int j1 = 0; j1 < b0; ++j1) {
-				for (int k1 = 0; k1 < b1; ++k1) {
-					double d0 = 0.125D;
-					double d1 = this.noiseArray[((i1 + 0) * l + j1 + 0) * b3 + k1 + 0];
-					double d2 = this.noiseArray[((i1 + 0) * l + j1 + 1) * b3 + k1 + 0];
-					double d3 = this.noiseArray[((i1 + 1) * l + j1 + 0) * b3 + k1 + 0];
-					double d4 = this.noiseArray[((i1 + 1) * l + j1 + 1) * b3 + k1 + 0];
-					double d5 = (this.noiseArray[((i1 + 0) * l + j1 + 0) * b3 + k1 + 1] - d1) * d0;
-					double d6 = (this.noiseArray[((i1 + 0) * l + j1 + 1) * b3 + k1 + 1] - d2) * d0;
-					double d7 = (this.noiseArray[((i1 + 1) * l + j1 + 0) * b3 + k1 + 1] - d3) * d0;
-					double d8 = (this.noiseArray[((i1 + 1) * l + j1 + 1) * b3 + k1 + 1] - d4) * d0;
+        for (int k = 0; k < 4; ++k)
+        {
+            int l = k * 5;
+            int i1 = (k + 1) * 5;
 
-					for (int l1 = 0; l1 < 8; ++l1) {
-						double d9 = 0.25D;
-						double d10 = d1;
-						double d11 = d2;
-						double d12 = (d3 - d1) * d9;
-						double d13 = (d4 - d2) * d9;
+            for (int j1 = 0; j1 < 4; ++j1)
+            {
+                int k1 = (l + j1) * 33;
+                int l1 = (l + j1 + 1) * 33;
+                int i2 = (i1 + j1) * 33;
+                int j2 = (i1 + j1 + 1) * 33;
 
-						for (int i2 = 0; i2 < 4; ++i2) {
-							int j2 = i2 + i1 * 4 << 11 | 0 + j1 * 4 << 7 | k1 * 8 + l1;
-							short short1 = 128;
-							j2 -= short1;
-							double d14 = 0.25D;
-							double d15 = (d11 - d10) * d14;
-							double d16 = d10 - d15;
+                for (int k2 = 0; k2 < 32; ++k2)
+                {
+                    double d0 = 0.125D;
+                    double d1 = this.noiseArray[k1 + k2];
+                    double d2 = this.noiseArray[l1 + k2];
+                    double d3 = this.noiseArray[i2 + k2];
+                    double d4 = this.noiseArray[j2 + k2];
+                    double d5 = (this.noiseArray[k1 + k2 + 1] - d1) * d0;
+                    double d6 = (this.noiseArray[l1 + k2 + 1] - d2) * d0;
+                    double d7 = (this.noiseArray[i2 + k2 + 1] - d3) * d0;
+                    double d8 = (this.noiseArray[j2 + k2 + 1] - d4) * d0;
 
-							for (int k2 = 0; k2 < 4; ++k2) {
-								if ((d16 += d15) > 0.0D) {
-									par3ArrayOfBlock[j2 += short1] = Blocks.stone;
-								} else if (k1 * 8 + l1 < b2) {
-									par3ArrayOfBlock[j2 += short1] = Blocks.water;
-								} else {
-									par3ArrayOfBlock[j2 += short1] = null;
-								}
-							}
+                    for (int l2 = 0; l2 < 8; ++l2)
+                    {
+                        double d9 = 0.25D;
+                        double d10 = d1;
+                        double d11 = d2;
+                        double d12 = (d3 - d1) * d9;
+                        double d13 = (d4 - d2) * d9;
 
-							d10 += d12;
-							d11 += d13;
-						}
+                        for (int i3 = 0; i3 < 4; ++i3)
+                        {
+                            int j3 = i3 + k * 4 << 12 | 0 + j1 * 4 << 8 | k2 * 8 + l2;
+                            short short1 = 256;
+                            j3 -= short1;
+                            double d14 = 0.25D;
+                            double d16 = (d11 - d10) * d14;
+                            double d15 = d10 - d16;
 
-						d1 += d5;
-						d2 += d6;
-						d3 += d7;
-						d4 += d8;
-					}
-				}
-			}
-		}
-	}
+                            for (int k3 = 0; k3 < 4; ++k3)
+                            {
+                                if ((d15 += d16) > 0.0D)
+                                {
+                                    p_147424_3_[j3 += short1] = Blocks.stone;
+                                }
+                                else if (k2 * 8 + l2 < b0)
+                                {
+                                    p_147424_3_[j3 += short1] = Blocks.water;
+                                }
+                                else
+                                {
+                                    p_147424_3_[j3 += short1] = null;
+                                }
+                            }
 
-	private void replaceBlocksForBiome(int par1, int par2, Block[] par3ArrayOfBlock, byte[] p_147422_4_, BiomeGenBase[] par5ArrayOfBiomeGenBase) {
-		ChunkProviderEvent.ReplaceBiomeBlocks event = new ChunkProviderEvent.ReplaceBiomeBlocks(this, par1, par2, par3ArrayOfBlock, par5ArrayOfBiomeGenBase);
-		MinecraftForge.EVENT_BUS.post(event);
-		if (event.getResult() == Event.Result.DENY)
-			return;
+                            d10 += d12;
+                            d11 += d13;
+                        }
 
-		byte b0 = (byte) (midY);
-		double d0 = 0.03125D;
-		this.stoneNoise = this.noiseGen4.func_151599_a(this.stoneNoise, par1 * 16, par2 * 16, 16, 16, d0 * 2.0D, d0 * 2.0D, .0D);
+                        d1 += d5;
+                        d2 += d6;
+                        d3 += d7;
+                        d4 += d8;
+                    }
+                }
+            }
+        }
+    }
 
-		for (int k = 0; k < 16; ++k) {
-			for (int l = 0; l < 16; ++l) {
-				BiomeGenBase biomegenbase = par5ArrayOfBiomeGenBase[l + k * 16];
-				int i1 = (int) (this.stoneNoise[k + l * 16] / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
-				int j1 = -1;
-				Block b1 = biomegenbase.topBlock;
-                Block b2 = biomegenbase.fillerBlock;
 
-				for (int k1 = 127; k1 >= 0; --k1) {
-					int l1 = (l * 16 + k) * 128 + k1;
-                    float f = biomegenbase.getFloatTemperature(par1 * 16 + k, k1, par2 * 16 + l);
+    private void replaceBlocksForBiome(int p_147422_1_, int p_147422_2_, Block[] p_147422_3_, byte[] p_147422_4_, BiomeGenBase[] p_147422_5_)
+    {
+        ChunkProviderEvent.ReplaceBiomeBlocks event = new ChunkProviderEvent.ReplaceBiomeBlocks(this, p_147422_1_, p_147422_2_, p_147422_3_, p_147422_4_, p_147422_5_, this.worldObj);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.getResult() == Event.Result.DENY) return;
 
-                    Block b3 = par3ArrayOfBlock[l1];
+        double d0 = 0.03125D;
+        this.stoneNoise = this.noiseGen4.func_151599_a(this.stoneNoise, (double)(p_147422_1_ * 16), (double)(p_147422_2_ * 16), 16, 16, d0 * 2.0D, d0 * 2.0D, 1.0D);
 
-					if (b3 == null || b3 == Blocks.air) {
-						j1 = -1;
-					} else if (b3 == Blocks.stone) {
-						if (j1 == -1) {
-							if (i1 <= 0) {
-								b1 = null;
-								b2 = Blocks.stone;
-							} else if (k1 >= b0 - 4 && k1 <= b0 + 1) {
-								b1 = biomegenbase.topBlock;
-								b2 = biomegenbase.fillerBlock;
-							}
+        for (int k = 0; k < 16; ++k)
+        {
+            for (int l = 0; l < 16; ++l)
+            {
+                BiomeGenBase biomegenbase = p_147422_5_[l + k * 16];
+                biomegenbase.genTerrainBlocks(this.worldObj, this.random, p_147422_3_, p_147422_4_, p_147422_1_ * 16 + k, p_147422_2_ * 16 + l, this.stoneNoise[l + k * 16]);
+            }
+        }
+    }
 
-							if (k1 < b0 && b1 == null) {
-								if (f < 0.15F) {
-									b1 = Blocks.ice;
-								} else {
-									b1 = Blocks.water;
-								}
-							}
+	private void initializeNoiseField(int p_147423_1_, int p_147423_2_, int p_147423_3_)
+    {
+        double d0 = 684.412D;
+        double d1 = 684.412D;
+        double d2 = 512.0D;
+        double d3 = 512.0D;
+        this.field_147426_g = this.noiseGen6.generateNoiseOctaves(this.field_147426_g, p_147423_1_, p_147423_3_, 5, 5, 200.0D, 200.0D, 0.5D);
+        this.field_147427_d = this.noiseGen3.generateNoiseOctaves(this.field_147427_d, p_147423_1_, p_147423_2_, p_147423_3_, 5, 33, 5, 8.555150000000001D, 4.277575000000001D, 8.555150000000001D);
+        this.field_147428_e = this.noiseGen1.generateNoiseOctaves(this.field_147428_e, p_147423_1_, p_147423_2_, p_147423_3_, 5, 33, 5, 684.412D, 684.412D, 684.412D);
+        this.field_147425_f = this.noiseGen2.generateNoiseOctaves(this.field_147425_f, p_147423_1_, p_147423_2_, p_147423_3_, 5, 33, 5, 684.412D, 684.412D, 684.412D);
+        boolean flag1 = false;
+        boolean flag = false;
+        int l = 0;
+        int i1 = 0;
+        double d4 = 8.5D;
 
-							j1 = i1;
+        for (int j1 = 0; j1 < 5; ++j1)
+        {
+            for (int k1 = 0; k1 < 5; ++k1)
+            {
+                float f = 0.0F;
+                float f1 = 0.0F;
+                float f2 = 0.0F;
+                byte b0 = 2;
+                BiomeGenBase biomegenbase = this.biomesForGeneration[j1 + 2 + (k1 + 2) * 10];
 
-							if (k1 >= b0 - 1) {
-								par3ArrayOfBlock[l1] = b1;
-							} else {
-								par3ArrayOfBlock[l1] = b2;
-							}
-						} else if (j1 > 0) {
-							--j1;
-							par3ArrayOfBlock[l1] = b2;
+                for (int l1 = -b0; l1 <= b0; ++l1)
+                {
+                    for (int i2 = -b0; i2 <= b0; ++i2)
+                    {
+                        BiomeGenBase biomegenbase1 = this.biomesForGeneration[j1 + l1 + 2 + (k1 + i2 + 2) * 10];
+                        float f3 = biomegenbase1.rootHeight;
+                        float f4 = biomegenbase1.heightVariation;
 
-							if (j1 == 0 && b2 == Blocks.sand) {
-								j1 = this.random.nextInt(4);
-								b2 =  Blocks.sandstone;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                        float f5 = this.parabolicField[l1 + 2 + (i2 + 2) * 5] / (f3 + 2.0F);
 
-	private double[] initializeNoiseField(double[] par1ArrayOfDouble, int par2, int par3, int par4, int par5, int par6, int par7) {
-		ChunkProviderEvent.InitNoiseField event = new ChunkProviderEvent.InitNoiseField(this, par1ArrayOfDouble, par2, par3, par4, par5, par6, par7);
-		MinecraftForge.EVENT_BUS.post(event);
-		if (event.getResult() == Event.Result.DENY)
-			return event.noisefield;
+                        if (biomegenbase1.rootHeight > biomegenbase.rootHeight)
+                        {
+                            f5 /= 2.0F;
+                        }
 
-		if (par1ArrayOfDouble == null) {
-			par1ArrayOfDouble = new double[par5 * par6 * par7];
-		}
+                        f += f4 * f5;
+                        f1 += f3 * f5;
+                        f2 += f5;
+                    }
+                }
 
-		if (this.parabolicField == null) {
-			this.parabolicField = new float[25];
+                f /= f2;
+                f1 /= f2;
+                f = f * 0.9F + 0.1F;
+                f1 = (f1 * 4.0F - 1.0F) / 8.0F;
+                double d12 = this.field_147426_g[i1] / 8000.0D;
 
-			for (int k1 = -2; k1 <= 2; ++k1) {
-				for (int l1 = -2; l1 <= 2; ++l1) {
-					float f = 10.0F / MathHelper.sqrt_float((k1 * k1 + l1 * l1) + 0.2F);
-					this.parabolicField[k1 + 2 + (l1 + 2) * 5] = f;
-				}
-			}
-		}
+                if (d12 < 0.0D)
+                {
+                    d12 = -d12 * 0.3D;
+                }
 
-		double d0 = 684.412D;
-		double d1 = 684.412D;
-		this.noise5 = this.noiseGen5.generateNoiseOctaves(this.noise5, par2, par4, par5, par7, 1.121D, 1.121D, 0.5D);
-		this.noise6 = this.noiseGen6.generateNoiseOctaves(this.noise6, par2, par4, par5, par7, 200.0D, 200.0D, 0.5D);
-		this.noise3 = this.noiseGen3.generateNoiseOctaves(this.noise3, par2, par3, par4, par5, par6, par7, d0 / 80.0D, d1 / 160.0D, d0 / 80.0D);
-		this.noise1 = this.noiseGen1.generateNoiseOctaves(this.noise1, par2, par3, par4, par5, par6, par7, d0, d1, d0);
-		this.noise2 = this.noiseGen2.generateNoiseOctaves(this.noise2, par2, par3, par4, par5, par6, par7, d0, d1, d0);
-		boolean flag = false;
-		boolean flag1 = false;
-		int i2 = 0;
-		int j2 = 0;
+                d12 = d12 * 3.0D - 2.0D;
 
-		for (int k2 = 0; k2 < par5; ++k2) {
-			for (int l2 = 0; l2 < par7; ++l2) {
-				float f1 = 0.0F;
-				float f2 = 0.0F;
-				float f3 = 0.0F;
-				byte b0 = 2;
-				BiomeGenBase biomegenbase = this.biomesForGeneration[k2 + 2 + (l2 + 2) * (par5 + 5)];
+                if (d12 < 0.0D)
+                {
+                    d12 /= 2.0D;
 
-				for (int i3 = -b0; i3 <= b0; ++i3) {
-					for (int j3 = -b0; j3 <= b0; ++j3) {
-						BiomeGenBase biomegenbase1 = this.biomesForGeneration[k2 + i3 + 2 + (l2 + j3 + 2) * (par5 + 5)];
-						float f4 = this.parabolicField[i3 + 2 + (j3 + 2) * 5] / (biomegenbase1.rootHeight + 2.0F);
+                    if (d12 < -1.0D)
+                    {
+                        d12 = -1.0D;
+                    }
 
-						if (biomegenbase1.rootHeight > biomegenbase.rootHeight) {
-							f4 /= 2.0F;
-						}
+                    d12 /= 1.4D;
+                    d12 /= 2.0D;
+                }
+                else
+                {
+                    if (d12 > 1.0D)
+                    {
+                        d12 = 1.0D;
+                    }
 
-						f1 += biomegenbase1.heightVariation * f4;
-						f2 += biomegenbase1.rootHeight * f4;
-						f3 += f4;
-					}
-				}
+                    d12 /= 8.0D;
+                }
 
-				f1 /= f3;
-				f2 /= f3;
-				f1 = f1 * 0.9F + 0.1F;
-				f2 = (f2 * 4.0F - 1.0F) / 8.0F;
-				double d2 = this.noise6[j2] / 8000.0D;
+                ++i1;
+                double d13 = (double)f1;
+                double d14 = (double)f;
+                d13 += d12 * 0.2D;
+                d13 = d13 * 8.5D / 8.0D;
+                double d5 = 8.5D + d13 * 4.0D;
 
-				if (d2 < 0.0D) {
-					d2 = -d2 * 0.3D;
-				}
+                for (int j2 = 0; j2 < 33; ++j2)
+                {
+                    double d6 = ((double)j2 - d5) * 12.0D * 128.0D / 256.0D / d14;
 
-				d2 = d2 * 3.0D - 2.0D;
+                    if (d6 < 0.0D)
+                    {
+                        d6 *= 4.0D;
+                    }
 
-				if (d2 < 0.0D) {
-					d2 /= 2.0D;
+                    double d7 = this.field_147428_e[l] / 512.0D;
+                    double d8 = this.field_147425_f[l] / 512.0D;
+                    double d9 = (this.field_147427_d[l] / 10.0D + 1.0D) / 2.0D;
+                    double d10 = MathHelper.denormalizeClamp(d7, d8, d9) - d6;
 
-					if (d2 < -1.0D) {
-						d2 = -1.0D;
-					}
+                    if (j2 > 29)
+                    {
+                        double d11 = (double)((float)(j2 - 29) / 3.0F);
+                        d10 = d10 * (1.0D - d11) + -10.0D * d11;
+                    }
 
-					d2 /= 1.4D;
-					d2 /= 2.0D;
-				} else {
-					if (d2 > 1.0D) {
-						d2 = 1.0D;
-					}
-
-					d2 /= 8.0D;
-				}
-
-				++j2;
-
-				for (int k3 = 0; k3 < par6; ++k3) {
-					double d3 = f2;
-					double d4 = f1;
-					d3 += d2 * 0.2D;
-					d3 = d3 * par6 / 16.0D;
-					double d5 = par6 / 2.0D + d3 * 4.0D;
-					double d6 = 0.0D;
-					double d7 = (k3 - d5) * 12.0D * 128.0D / 128.0D / d4;
-
-					if (d7 < 0.0D) {
-						d7 *= 4.0D;
-					}
-
-					double d8 = this.noise1[i2] / 512.0D;
-					double d9 = this.noise2[i2] / 512.0D;
-					double d10 = (this.noise3[i2] / 10.0D + 1.0D) / 2.0D;
-
-					if (d10 < 0.0D) {
-						d6 = d8;
-					} else if (d10 > 1.0D) {
-						d6 = d9;
-					} else {
-						d6 = d8 + (d9 - d8) * d10;
-					}
-
-					d6 -= d7;
-
-					if (k3 > par6 - 4) {
-						double d11 = ((k3 - (par6 - 4)) / 3.0F);
-						d6 = d6 * (1.0D - d11) + -10.0D * d11;
-					}
-
-					par1ArrayOfDouble[i2] = d6;
-					++i2;
-				}
-			}
-		}
-
-		return par1ArrayOfDouble;
-	}
+                    this.noiseArray[l] = d10;
+                    ++l;
+                }
+            }
+        }
+    }
 
 	// 球の中心からの距離
 	private double getSphereDistance(int i, int j, int k) {

@@ -51,7 +51,23 @@ public class BiosphereBiomeManager {
 		addWeightedRandomBiome(BiomeGenBase.jungle.biomeID, 25);
 		addWeightedRandomBiome(BiomeGenBase.swampland.biomeID, 40);
 		addWeightedRandomBiome(BiomeGenBase.mushroomIsland.biomeID, 5);
-		addWeightedRandomBiome(BiomeGenBase.ocean.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.ocean.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.frozenOcean.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.ocean.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.river.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.hell.biomeID, 1);
+        addWeightedRandomBiome(BiomeGenBase.sky.biomeID, 1);
+        addWeightedRandomBiome(BiomeGenBase.frozenRiver.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.beach.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.deepOcean.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.stoneBeach.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.coldBeach.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.birchForest.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.roofedForest.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.coldTaiga.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.megaTaiga.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.savanna.biomeID, 10);
+        addWeightedRandomBiome(BiomeGenBase.mesa.biomeID, 10);
 	}
 
 }
